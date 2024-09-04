@@ -27,8 +27,10 @@ CollarRx::CollarRx(uint8_t rx_pin, msg_cb_t cb, void *userdata)
 void CollarRx::print_message(struct collar_message *msg)
 {
   Serial.print("ID:\t0x");
-  Serial.println(msg->id, HEX);
-
+  Serial.print(msg->id, HEX); 
+  Serial.print(" | ");
+  Serial.println(msg->id, DEC); 
+  
   Serial.print("Chan.:\t");
   Serial.println(chan_to_str(msg->channel));
 
