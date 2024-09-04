@@ -22,7 +22,7 @@ void CollarRxType1::buffer_to_collar_message(const uint8_t buffer[5], struct col
   memset(msg, 0, sizeof(struct collar_message));
 
   // bytes 0&1 = ID
-  memcpy(&msg->id, buffer, 2);
+  msg->id=((buffer[0]<<8)|buffer[1]);
 
   // byte 2 = mode & channel
   msg->mode     = (collar_mode)(buffer[2] & 0x0F);
@@ -58,13 +58,14 @@ void CollarRxType1::isr()
   static unsigned int high_pulse_len =0;
   static unsigned int low_pulse_len=0;
   static uint8_t buffer[5];        // expecting to receive 5 bytes
-  static int8_t byte_position = -1; // keep track of current byte being received, , if -1 no start received
+  static uint8_t byte_position = -1; // keep track of current byte being received, , if -1 no start received
   static uint8_t bit_position = 0; // keep track of expected next bit postion in byte
 
   if(digitalRead(_rx_pin) == 0)
   { //falling edge
     high_pulse_len = micros() - rx_micros;
     rx_micros = micros(); //start measurement of pulse length for low state
+    return;
   } 
   else 
   {  //rising edge
@@ -80,6 +81,7 @@ void CollarRxType1::isr()
         byte_position = 0;
         bit_position = 0;
         memset(buffer, 0, sizeof(buffer));
+        return;
     }
     else
     { 
@@ -107,7 +109,8 @@ void CollarRxType1::isr()
               {
                 buffer_to_collar_message(buffer, &_rx_msg);
                 _cb(&_rx_msg, _userdata);
-                byte_position=-1; //done
+                byte_position=-1; //done, wait for new start
+                return;
               }
             }
           }
@@ -116,6 +119,7 @@ void CollarRxType1::isr()
         {
           //transmission error, wait for new start
           byte_position=-1;
+          return;
         }
       }
     }
