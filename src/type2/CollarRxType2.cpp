@@ -99,6 +99,7 @@ bool CollarRxType2::buffer_to_collar_message(const uint8_t buffer[5], struct col
 
 void CollarRxType2::isr()
 {
+  if (digitalRead(_rx_pin)==0) return; //quick and dirty don't check falling edges as interrupt is fired on signal change now
   static unsigned long rx_micros =0;
   static uint8_t pulse_count = 0;
   delayMicroseconds(500); // BAD: really shouldn't do this in an ISR
