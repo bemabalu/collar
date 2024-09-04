@@ -79,7 +79,7 @@ void CollarRx::rx_start()
 {
   _instance = this;
   pinMode(_rx_pin, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(_rx_pin), CollarRx::s_isr, RISING);
+  attachInterrupt(digitalPinToInterrupt(_rx_pin), CollarRx::s_isr, CHANGE);
 }
 
 void CollarRx::s_isr()
