@@ -37,7 +37,8 @@ void CollarRxType1::buffer_to_collar_message(const uint8_t buffer[5], struct col
 bool CollarRxType1::is_message_valid(const uint8_t buffer[5])
 {
   // if we're filtering by ID, check it matches
-  if (_use_id && (memcmp(buffer, &_id, 2)))
+  uint16_t id= ((buffer[0]<<8)|buffer[1]);
+  if (_use_id && (id!=_id))
     return false;
 
   // calculate checksum
