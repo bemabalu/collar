@@ -55,6 +55,9 @@ bool CollarRxType1::is_message_valid(const uint8_t buffer[5])
 
 void CollarRxType1::isr()
 {
+  #ifdef ISR_MONITOR_PIN
+    digitalWrite(ISR_MONITOR_PIN,HIGH);
+  #endif
   static unsigned long rx_micros =0;
   static unsigned int high_pulse_len =0;
   static unsigned int low_pulse_len=0;
@@ -66,6 +69,9 @@ void CollarRxType1::isr()
   { //falling edge
     high_pulse_len = micros() - rx_micros;
     rx_micros = micros(); //start measurement of pulse length for low state
+    #ifdef ISR_MONITOR_PIN
+      digitalWrite(ISR_MONITOR_PIN,LOW);
+    #endif
     return;
   } 
   else 
@@ -82,6 +88,9 @@ void CollarRxType1::isr()
         byte_position = 0;
         bit_position = 0;
         memset(buffer, 0, sizeof(buffer));
+        #ifdef ISR_MONITOR_PIN
+          digitalWrite(ISR_MONITOR_PIN,LOW);
+        #endif
         return;
     }
     else
@@ -111,6 +120,9 @@ void CollarRxType1::isr()
                 buffer_to_collar_message(buffer, &_rx_msg);
                 _cb(&_rx_msg, _userdata);
                 byte_position=-1; //done, wait for new start
+                #ifdef ISR_MONITOR_PIN
+                  digitalWrite(ISR_MONITOR_PIN,LOW);
+                #endif
                 return;
               }
             }
@@ -120,9 +132,16 @@ void CollarRxType1::isr()
         {
           //transmission error, wait for new start
           byte_position=-1;
+          #ifdef ISR_MONITOR_PIN
+             digitalWrite(ISR_MONITOR_PIN,LOW);
+          #endif
           return;
         }
       }
     }
   }
+  #ifdef ISR_MONITOR_PIN
+      digitalWrite(ISR_MONITOR_PIN,LOW);
+  #endif
+  
 }

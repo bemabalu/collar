@@ -79,6 +79,10 @@ const char *CollarRx::mode_to_str(collar_mode mode)
 
 void CollarRx::rx_start()
 {
+  #ifdef ISR_MONITOR_PIN
+   pinMode(ISR_MONITOR_PIN,OUTPUT); 
+  #endif 
+
   _instance = this;
   pinMode(_rx_pin, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(_rx_pin), CollarRx::s_isr, CHANGE);
