@@ -13,7 +13,9 @@ void CollarTxType1::transmit (struct collar_message message)
 {
   uint8_t txbuf[4]; // bytes 0+1=ID, 2=mode&channel, 3=power
 
-  memcpy(txbuf, &message.id, 2);
+
+  txbuf[0] = message.id >> 8;
+  txbuf[1] = message.id & 0x00FF;
   txbuf[2] = ((message.channel << 4) | message.mode);
 
   // Power levels >99 are ignored by the collar
