@@ -72,7 +72,7 @@ void CollarTxType1::tx_buffer(uint8_t *buf, uint8_t buf_len)
   for (int n=0; n < buf_len; n++)
   {
      check += buf[n];
-     tx_byte(buf[n]);2
+     tx_byte(buf[n]);
   }
   tx_byte(check);
 
