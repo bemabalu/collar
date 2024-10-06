@@ -33,9 +33,9 @@ void CollarTxType1::transmit (struct collar_message message)
 void CollarTxType1::tx_start()
 {
   digitalWrite(_tx_pin, HIGH);
-  delayMicroseconds(1550);
+  delayMicroseconds(1500); //1550
   digitalWrite(_tx_pin, LOW);
-  delayMicroseconds(660);
+  delayMicroseconds(500); //660
 }
 
 void CollarTxType1::tx_bit(bool one)
@@ -43,16 +43,16 @@ void CollarTxType1::tx_bit(bool one)
   if (one)
   {
     digitalWrite(_tx_pin, HIGH);
-    delayMicroseconds(830);
+    delayMicroseconds(750); //830
     digitalWrite(_tx_pin, LOW);
-    delayMicroseconds(200);
+    delayMicroseconds(250); //200
   }
   else
   {
     digitalWrite(_tx_pin, HIGH);
-    delayMicroseconds(360);
+    delayMicroseconds(250); //360
     digitalWrite(_tx_pin, LOW);
-    delayMicroseconds(670);
+    delayMicroseconds(750); //670
   }
 }
 
@@ -80,5 +80,5 @@ void CollarTxType1::tx_buffer(uint8_t *buf, uint8_t buf_len)
   tx_bit(0);
   tx_bit(0);
   digitalWrite(_tx_pin, LOW);
-  delayMicroseconds(2000);
+  //delayMicroseconds(2000);
 }
